@@ -10,7 +10,7 @@ import serial.tools.list_ports
 
 AIO_FEED_ID = ["nutnhan1", "nutnhan2"]
 AIO_USERNAME = "huunguyenng"
-AIO_KEY = "aio_cfTE85AxGAVyAuJ93DgpX6OZ7yIB"
+AIO_KEY = "aio_DRNu329b602DIBDsAFtHTW4DDVkc"
 
 # Ket noi voi Adafruit-IO
 def connected(client):
@@ -41,29 +41,33 @@ def getPort():
         if "USB Serial Device" in strPort:
             splitPort = strPort.split(" ")
             comPort = (splitPort[0])
-    return "COM5"
+    return 'COM5'
 
-def processData(data):
+if getPort()!= "None":
+    ser = serial.Serial(port=getPort(), baudrate=115200)
+    print(ser)
+mess = ""
+
+def processData(client, data):
     data = data.replace("!","")
     data = data.replace("#","")
     splitData = data.split(":")
-    print("splitData")
-    if splitData[1] == "TEMP":
-        client.publish("cambien1", splitData[2])
+    print(splitData)
+    if splitData[1] == "T":
+       client.publish("cambien1", splitData[2])
+    elif splitData[1] == "H":
+        client.publish("cambien2", splitData[2])
 
-if getPort()!= "None":
-    ser = serial.Serial(port = getPort(), baudrate=115200)
 mess = ""
-
-def readSerial():
+def readSerial(client):
     bytesToRead = ser.inWaiting()
     if(bytesToRead > 0):
         global mess
         mess = mess + ser.read(bytesToRead).decode("UTF-8")
-        while("" in mess) and ("!" in mess):
+        while("#" in mess) and ("!" in mess):
             start = mess.find("!")
-            end = mess.find("!")
-            processData(mess[start:end + 1])
+            end = mess.find("#")
+            processData(client, mess[start:end + 1])
             if(end == len(mess)):
                 mess = ""
             else:
@@ -84,4 +88,5 @@ counter = 0
 sensor_type = 0
 counter_ai = 5
 while True:
-    pass
+    readSerial(client)
+    time.sleep(1)
