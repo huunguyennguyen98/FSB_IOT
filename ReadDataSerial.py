@@ -10,7 +10,7 @@ import serial.tools.list_ports
 
 AIO_FEED_ID = ["nutnhan1", "nutnhan2"]
 AIO_USERNAME = "huunguyenng"
-AIO_KEY = "aio_DRNu329b602DIBDsAFtHTW4DDVkc"
+AIO_KEY = "aio_Czoh32gOCHLGM0w4EeMUUy1r4HoL"
 
 # Ket noi voi Adafruit-IO
 def connected(client):
@@ -89,4 +89,4 @@ sensor_type = 0
 counter_ai = 5
 while True:
     readSerial(client)
-    time.sleep(1)
+    time.sleep(5)
